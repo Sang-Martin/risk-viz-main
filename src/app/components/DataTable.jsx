@@ -85,10 +85,10 @@ function DataTable() {
       <Suspense fallback={<div>Loading...</div>}>
         <table {...getTableProps()}>
           <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th
+            {headerGroups.map((headerGroup, index1) => (
+              <tr {...headerGroup.getHeaderGroupProps()} key={index1}>
+                {headerGroup.headers.map((column, index2) => (
+                  <th key={index2}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     className={` bg-sky-200 rounded-sm hover:underline
                     ${
@@ -111,7 +111,7 @@ function DataTable() {
               prepareRow(row);
               const even = (number) => (number % 2 == 0 ? "bg-slate-200" : "");
               return (
-                <tr {...row.getRowProps()} className={`${even(i)}`}>
+                <tr {...row.getRowProps()} className={`${even(i)}`} key={i}>
                   {row.cells.map((cell, index) => {
                     // if(index !== 5)
                     return (

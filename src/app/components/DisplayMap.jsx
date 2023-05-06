@@ -37,7 +37,7 @@ const DisplayMap = () => {
       <>
         {allData.map((pin, index) => {
           return (
-            <Pin
+            <Pin key={index}
               pin={pin}
               index={index}
               handleOnMouseOver={() => setPopupInfo(pin)}
