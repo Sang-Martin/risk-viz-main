@@ -1,3 +1,5 @@
+'use client'
+
 import React, {
   useState,
   useMemo,
@@ -15,8 +17,9 @@ import {
 
 function DataTable() {
   const [state, dispatch] = useContext(AppContext);
+  const [data, setData] = useState(state.locations)
+  const [year, setYear] = useState(state.Year)
 
-  const year = state.year;
   const columns = useMemo(
     () => [
       {
@@ -51,10 +54,6 @@ function DataTable() {
     []
   );
 
-  const data = useMemo(
-    () => state.locations.filter((data) => data.Year === year),
-    []
-  );
 
   const tableInstance = useTable(
     { columns, data, initialState: { pageIndex: 0, pageSize: 10 } },
@@ -72,6 +71,13 @@ function DataTable() {
     state: { pageIndex, pageSize },
     setPageSize,
   } = tableInstance;
+
+  // useEffect(() => {
+  // const filteredData = data.filter(d => d.Year === year)
+  //   setData(filteredData)
+  //   console.log(data);
+  // },[year])
+
 
   return (
     <section className="section">

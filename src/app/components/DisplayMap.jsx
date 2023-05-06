@@ -1,4 +1,5 @@
 'use client'
+
 import { useState, useMemo, useEffect, useContext } from "react";
 import { AppContext } from "../contexts/app";
 
@@ -21,11 +22,8 @@ const DisplayMap = () => {
   const [state, dispatch] = useContext(AppContext);
   const [popupInfo, setPopupInfo] = useState(null);
 
-  // const [year, setYear] = useState(state.year);
-  const data = state.locations
-  const filterData = data.filter(d => d.Year == 2070)
-  // const [allData, setAllData] = useState(state.locations);
-  const [allData, setAllData] = useState(filterData);
+  const [year, setYear] = useState(state.year);
+  const [allData, setAllData] = useState([]);
 
   const viewport = {
     longitude: -60.1831,
@@ -33,12 +31,6 @@ const DisplayMap = () => {
     zoom: 8,
   };
 
-
-  // const onChange = (year) => {
-  //   setYear(year);
-  //   const filterData = allData.filter((data) => data.Year === year);
-  //   setAllData(filterData);
-  // };
 
   const pins = useMemo(
     () => (
@@ -55,7 +47,7 @@ const DisplayMap = () => {
         })}
       </>
     ),
-    []
+    [allData]
   );
 
   const showMap = useMemo(() => (
@@ -87,25 +79,37 @@ const DisplayMap = () => {
           )}
         </Map>
     </>
-  ))
+  ), [allData])
 
 
   useEffect(() => {
-    const filteredData = allData.filter((data) => data.Year === state.year);
-    setAllData(filteredData);
+    const getData = async(y) => {
+      const res = await fetch(`/api/echo?year=${y}`)
+      const data = await res.json()
+      return data
+    }
 
-    
+  getData(year).then((data) => {
+    setAllData(data)
+  })
+  dispatch({type: "CHANGE_YEAR", payload: year})
+  }, [year]);
 
-  }, [state.year]);
+  const onChange = (year) => {
+    setYear(year);
+    const filterData = allData.filter((data) => data.Year === year);
+    setAllData(filterData);
+  
+  };
 
   return (
     <section className="section">
       <h2 className=" title">Map </h2>
       <div>
         {showMap}
-        <ControlPanel   />
+        <ControlPanel year={year} onChange={(e) => onChange(e) }  />
       </div>
-      <p>{state.year}</p>
+      <p>{year}</p>
     </section>
   );
 };
